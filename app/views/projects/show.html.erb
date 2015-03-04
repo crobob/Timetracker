@@ -1,0 +1,26 @@
+<h1><%= @project.name %> </h1>
+
+<p>Company: <%= @project.company.name %> </p>
+<p>Default Rate: <%= @project.default_rate %> </p>
+<p>Slug: <%= @project.slug %> </p>
+	
+<table>
+	<tbody>
+		<tr>
+			<th>User</th>
+			<th>Datetime Performed</th>
+			<th>Hours</th>
+		</tr>
+        <% @project.works.each do |work| %>
+			<tr>
+				<td><%= work.user %></td>
+				<td><%= link_to work.datetimeperformed.strftime('%m/%d/%Y %H:%M'), work %></td>
+				<td><%= work.hours %></td>
+			</tr>
+		<% end %>
+	</tbody>
+</table>
+
+<% content_for :aside do %>
+    <% render 'sidebar' %>
+<% end %>
