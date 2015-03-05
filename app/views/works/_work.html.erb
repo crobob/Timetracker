@@ -1,0 +1,6 @@
+<tr>
+	<td><%= work.user %></td>
+	<td><%= link_to work.project.name, work.project %></td>
+	<td><%= link_to work.datetimeperformed.strftime('%m/%d/%Y %H:%M'), work %></td>
+	<td><%= work.hours %></td>
+</tr>
