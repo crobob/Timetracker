@@ -2,7 +2,7 @@ class User < ActiveRecord::Base
   belongs_to :company
   
   validates :fname, length: {minimum: 2}
-  validates :lname, length: {minimum: 5}
+  validates :lname, length: {minimum: 3}
   validates :company, presence: true
   
   has_many :works

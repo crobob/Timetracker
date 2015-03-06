@@ -4,6 +4,7 @@
 <p>Default Rate: <%= @project.default_rate %> </p>
 <p>Slug: <%= @project.slug %> </p>
 	
+<% if @project.works.size > 0 %>
 <table>
 	<tbody>
 		<tr>
@@ -15,6 +16,9 @@
         <%= render partial: "works/work", collection: @project.works %>
 	</tbody>
 </table>
+<% else %>
+	<p>No Works</p>
+<% end %>
 
 <% content_for :aside do %>
     <% render 'sidebar' %>
