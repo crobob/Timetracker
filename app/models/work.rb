@@ -3,8 +3,8 @@ class Work < ActiveRecord::Base
   belongs_to :project
   
   validates :hours, numericality: { only_integer: true, greater_than: 0, less_that_or_equal_to: 8}
-  validates :user, presence: true
-  validates :project, presence: true
+  validates :user_id, presence: true
+  validates :project_id, presence: true
   validates :datetimeperformed, presence: true
   validate :datetimeperformed_cannot_be_future
   

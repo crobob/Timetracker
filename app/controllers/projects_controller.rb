@@ -10,6 +10,8 @@ class ProjectsController < ApplicationController
     else
       @project = Project.find(params[:id])
     end
+    @work = Work.new
+    @work.project = @project
   end
   
   def new
@@ -18,9 +20,26 @@ class ProjectsController < ApplicationController
   
   def create
     @project = Project.new(params[:project].permit(:company_id, :name, :default_rate, :slug))
-    @project.save
-    flash[:notice] = 'Project Created'
-    redirect_to @project
+    if @project.save
+      flash[:notice] = 'Project Created'
+      redirect_to @project
+    else
+      render 'new'
+    end
   end
 
+  def edit
+    @project = Project.find(params[:id])
+  end
+  
+  def update
+    @project = Project.find(params[:id])
+    if @project.update(params[:project].permit(:company_id, :name, :default_rate, :slug))
+      flash[:notice] = 'Project Updated'
+      redirect_to @project
+    else
+      render 'edit'
+    end
+  end
+  
 end
