@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
   <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
-  <%= csrf_meta_tags %>
+  <%= csrf_meta_tags %> 
 </head>
 <body>
 <div id="container">
@@ -21,12 +21,15 @@
 	</header>
 	<section id="main">
 		<article>
-			<% if flash[:notice] %>
-				<div class="flash notice"><%= flash[:notice] %></div>
+			<% [:notice, :alert].each do |level| %>
+			    <% if flash[level] %>
+			        <div class="flash <%= level %>"><%= flash[level] %></div>
+  			    <% end %>
 			<% end %>
 			<%= yield %>
 		</article>
 		<aside>
+			<%= user_logged_in_msg %>
 			<%= yield :aside %>
 		</aside>
 	</section>
