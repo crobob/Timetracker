@@ -4,6 +4,11 @@ class ProjectsController < ApplicationController
   
   def index
     @projects = Project.all
+    respond_to do |format|
+        format.html
+        format.csv {send_data Project.export_csv(@projects), type: 'text/csv; charset=utf-8;header=present',
+            disposition: 'attachment; filename=contacts.csv' }
+    end
   end
   
   def show
@@ -21,7 +26,7 @@ class ProjectsController < ApplicationController
   end
   
   def create
-    @project = Project.new(params[:project].permit(:company_id, :name, :default_rate, :slug, :user_id))
+    @project = Project.new(params[:project].permit(:company_id, :name, :default_rate, :slug, :owner_id))
     if @project.save
       flash[:notice] = 'Project Created'
       redirect_to @project
@@ -36,7 +41,7 @@ class ProjectsController < ApplicationController
   
   def update
     @project = Project.find(params[:id])
-    if @project.update(params[:project].permit(:company_id, :name, :default_rate, :slug, :user_id))
+    if @project.update(params[:project].permit(:company_id, :name, :default_rate, :slug, :owner_id))
       Usermailer.updatedproject_email(@project).deliver_now
       flash[:notice] = 'Project Updated'
       redirect_to @project

@@ -1,10 +1,12 @@
 class WorksController < ApplicationController
+  
+  before_filter :authenticate_user!, only: [:create, :edit, :new, :update]
 
   def index
     if (params[:days])
-      @works = Work.recentdays(params[:days]).order('datetimeperformed desc')
+      @works = Work.recentdays(params[:days]).order('datetimeperformed desc').paginate(:page => params[:page])
     else
-      @works = Work.all.order('datetimeperformed desc')
+      @works = Work.all.order('datetimeperformed desc').paginate(:page => params[:page])
     end
   end
   
@@ -17,11 +19,17 @@ class WorksController < ApplicationController
   end
   
   def create
-    @work = Work.new(params[:work].permit(:project_id, :user_id, :datetimeperformed, :hours))
-    uploaded_io = params[:doc]
-    File.open(Rails.root.join('public', 'uploads', uploaded_io.original_filename), 'wb') do |file|
-        file.write(uploaded_io.read)
+    @work = Work.new(params[:work].permit(:project_id, :datetimeperformed, :hours, :doc))
+    if params[:doc]
+      uploaded_io = params[:doc]
+      File.open(Rails.root.join('public', 'uploads', uploaded_io.original_filename), 'wb') do |file|
+          file.write(uploaded_io.read)
+          @work.doc = uploaded_io.original_filename
+      end
     end
+    
+    @work.user = current_user
+    
     respond_to do |format|
       if @work.save
         Usermailer.workcreated_email(@work).deliver_now
@@ -40,9 +48,10 @@ class WorksController < ApplicationController
   
   def update
     @work = Work.find(params[:id])
-    if @work.update(params[:work].permit(:project_id, :user_id, :datetimeperformed, :hours))
+    @work.user = current_user
+    if @work.update(params[:work].permit(:project_id, :datetimeperformed, :hours))
       flash[:notice] = 'Work Updated'
-      redirect_to @company
+      redirect_to @work
     else
       render 'edit'
     end

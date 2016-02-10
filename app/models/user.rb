@@ -8,10 +8,12 @@ class User < ActiveRecord::Base
   validates :fname, length: {minimum: 2}
   validates :lname, length: {minimum: 3}
   validates :company, presence: true
+  validates :admin, presence: true
   
   has_many :works
   has_many :projects, :through => :works
-  has_many :projects
+  has_many :projects_owned, :foreign_key => 'owner_id', :class_name => 'Project'
+  
   def to_s
     "#{fname} #{lname}"
   end

@@ -1,5 +1,7 @@
 class CompaniesController < ApplicationController
   
+  before_filter :check_admin, only: [:create, :update, :new, :edit]
+  
   def index
     @companies = Company.all
   end
@@ -38,6 +40,14 @@ class CompaniesController < ApplicationController
       redirect_to @company
     else
       render 'edit'
+    end
+  end
+  
+  def check_admin
+    authenticate_user!
+    unless current_user.admin?
+        flash[:alert] = "Must be admin to add or update a company"
+        redirect_to companies_path
     end
   end
   
